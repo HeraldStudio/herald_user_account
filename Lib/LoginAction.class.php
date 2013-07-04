@@ -19,8 +19,8 @@ class LoginAction{
 	private $sessionid;
 
 	function __construct(){
-		$this -> username = "213111517";//$_POST['username'];
-		$this -> password = "ggr123,.";//$_POST['password'];
+		$this -> username = $_POST['username'];
+		$this -> password = $_POST['password'];
 		$this -> rememberme = 1;//$_POST['remenberme'];
 		DbConnectModel::startConnect();
 	}
@@ -28,7 +28,7 @@ class LoginAction{
 		DbConnectModel::closeConnect();
 	}
 	public function main(){
-		if($this -> isUserLogin()){
+		if(!empty($_COOKIE['HERALD_USER_SESSION_ID']) && $this -> isUserLogin()){
 			echo "已登录";
 			return;
 		}else{
@@ -69,10 +69,10 @@ class LoginAction{
 		$this -> sessionid = $this -> createSessionId($this -> username, $this -> password);
 		if($this -> rememberme == 0){
 			$this -> expiredtime = time()+3600000;
-			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime);
+			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime,'/');
 		}elseif($this -> rememberme == 1){
 			$this -> expiredtime = time()+1000000000;
-			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime);
+			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime,'/');
 		}	
 		return $this -> addData();
 	}
@@ -122,7 +122,7 @@ class LoginAction{
 		$sql = "SELECT * FROM `herald_session` WHERE `session_id`='".$_COOKIE['HERALD_USER_SESSION_ID']."'";
 		$query = mysql_query($sql);
 		if($rs = mysql_fetch_array($query)){
-			if(!empty($_COOKIE['HERALD_USER_SESSION_ID']) && $rs['ip'] == $_SERVER['REMOTE_ADDR'] && time() < $rs['expired_time'] && $rs['user_id'] == $this -> username){
+			if($rs['ip'] == $_SERVER['REMOTE_ADDR'] && time() < $rs['expired_time'] && $rs['user_id'] == $this -> username){
 				return true;
 			}
 		}
