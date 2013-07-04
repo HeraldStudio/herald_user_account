@@ -7,7 +7,7 @@
 
 ##二、应用中获取会话状态的方法
 
-<p>首先获取键值为HERALD_USER_SESSION_ID的cookie，然后在herald_session表中查找该cookie值对应的一条记录，即可获取到
+<p>首先获取键值为HERALD_USER_SESSION_ID的cookie，然后在herald_user_account.herald_session表中查找该cookie值对应的一条记录，即可获取到
 
 
 相应的user_id，和ip 当满足访问者ip与数据表中的ip相等并且当前时间戳小于expired_time时，表示用户处于登录状态。</p>
