@@ -80,7 +80,16 @@ class LoginAction{
 
 	}
 	private function addData(){
-		$sql = "INSERT INTO `herald_user` (card_num, true_name, last_login_time, login_times) VALUES ('".$this -> username."', '".$this -> truename."', date("Y-m-d G:i:s"), `login_times`+1)";
-		mysql_query($sql) or die(mysql_error());
+		$sql_a = "INSERT INTO `herald_user` (card_num, true_name, last_login_time, login_times) VALUES ('".$this -> username."', '".$this -> truename."', '".date('Y-m-d G:i:s')."', `login_times`+1)";
+		$sql_b = "INSERT INTO `herald_session` (session_id, ip, login_time, expired_time) VALUES ('".$this -> sessionid."', '127.0.0.1', '".time()."', '".$this -> expiredtime."')";
+		mysql_query($sql_a);
+		mysql_query($sql_b);
+		if(mysql_errno()){
+			mysql_query('rollback');
+			echo 'err';
+		}else{
+			mysql_query('commit');
+			echo "ok";
+		}
 	}
 }
