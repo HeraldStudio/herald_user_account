@@ -36,7 +36,7 @@ if(!$result){
 			<label class="control-label" for="inputPassword">密码</label>
 				<input type="password" id="inputPassword" name="password">
 				<label class="checkbox">
-					<input type="checkbox" name="rememberme"> Remember me
+					<input type="checkbox" name="remenberme"> Remember me
 				</label>
 				<button type="submit" class="btn btn-success center">登录</button>
     </form>

@@ -36,4 +36,8 @@ class GetSessionModel{
 			return false;
 		}
 	}
+	public function getUserSessionState($userid){
+		$sql = "SELECT * FROM `herald_session` WHERE `user_id`='".$userid."'";
+		
+	}
 }
