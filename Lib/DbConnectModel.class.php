@@ -1,7 +1,7 @@
 <?php
 /**
  *
- *@copyrighe Powered by HeraldStudio SEU
+ *@copyright Powered by HeraldStudio SEU
  *@author GuoGengrui <tairyguo@gmail.com>
  *@version 1.0.0
  *@filename DbConnectModel.class.php

@@ -4,7 +4,7 @@
  *@filename LoginAction.class.php
  *@author GuoGengrui <tairyguo@gmail.com>
  *@version 1.0.0
- * 
+ *@copyright HeraldStudio SEU
  *
  * */
 require_once 'DbConnectModel.class.php';
@@ -21,22 +21,32 @@ class LoginAction{
 	function __construct(){
 		$this -> username = "213111517";//$_POST['username'];
 		$this -> password = "ggr123,.";//$_POST['password'];
-//		$this -> rememberme = $_POST['remenberme'];
+		$this -> rememberme = 1;//$_POST['remenberme'];
 		DbConnectModel::startConnect();
 	}
 	function __destruct(){
 		DbConnectModel::closeConnect();
 	}
 	public function main(){
-		$result = $this -> confirmUserinfo();
-		if($result == "error"){
-			echo "用户名或密码错误";
+		if($this -> isUserLogin()){
+			echo "已登录";
 			return;
 		}else{
-			$this -> resolveData($result);
+			$result = $this -> confirmUserinfo();
+			if($result == "error"){
+				echo "用户名或密码错误";
+				return;
+			}else{
+				$rs = $this -> resolveData($result);
+				if($rs == "success"){
+					echo "登录成功";
+				}else{
+					echo "登录失败";
+				}
+			}
 		}
 	}
-	public function confirmUserinfo(){
+	private function confirmUserinfo(){
 		 $ch = curl_init();
 		 $postdata ="username=".$this -> username."&password=".$this -> password;
 		 curl_setopt($ch, CURLOPT_URL, 'http://121.248.63.105:8080/authentication/');
@@ -53,24 +63,24 @@ class LoginAction{
 		 	return $responseword;
 		 }
 	}
-	public function resolveData($result){
+	private function resolveData($result){
 		$result = explode(',',$result);
 		$this -> truename = $result[0];
 		$this -> sessionid = $this -> createSessionId($this -> username, $this -> password);
-		if($this -> remenberme == 0){
+		if($this -> rememberme == 0){
 			$this -> expiredtime = time()+3600000;
 			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime);
 		}elseif($this -> rememberme == 1){
 			$this -> expiredtime = time()+1000000000;
 			setcookie('HERALD_USER_SESSION_ID', $this -> sessionid, $this -> expiredtime);
 		}	
-		$this -> addData();
+		return $this -> addData();
 	}
 	private function createSessionId( $username, $password ){
 		$session_id = $this -> phphash($username) + $this -> phphash($password) + rand() + time();
 		return md5($session_id);
 	}
-	public function phphash($str){		
+	private function phphash($str){		
 		$seed=31;
 		$hash=0;
 		for ($i = 0; $i < strlen($str); $i++){
@@ -80,16 +90,42 @@ class LoginAction{
 
 	}
 	private function addData(){
-		$sql_a = "INSERT INTO `herald_user` (card_num, true_name, last_login_time, login_times) VALUES ('".$this -> username."', '".$this -> truename."', '".date('Y-m-d G:i:s')."', `login_times`+1)";
-		$sql_b = "INSERT INTO `herald_session` (session_id, ip, login_time, expired_time) VALUES ('".$this -> sessionid."', '127.0.0.1', '".time()."', '".$this -> expiredtime."')";
-		mysql_query($sql_a);
-		mysql_query($sql_b);
+		if($this -> isUserExist()){
+			$sql_a = "UPDATE `herald_user` SET `login_times`=`login_times`+1 WHERE `card_num`='".$this -> username."'";
+			mysql_query($sql_a);
+			$sql_b = "INSERT INTO `herald_session` (session_id, ip, login_time, expired_time, user_id) VALUES ('".$this -> sessionid."', '127.0.0.1', '".time()."', '".$this -> expiredtime."','".$this -> username."')";
+			mysql_query($sql_b) or die(mysql_error());
+		}else{
+			$sql_a = "INSERT INTO `herald_user` (card_num, true_name, last_login_time, login_times) VALUES ('".$this -> username."', '".$this -> truename."', '".date('Y-m-d G:i:s')."', `login_times`+1)";
+			$sql_b = "INSERT INTO `herald_session` (session_id, ip, login_time, expired_time, user_id) VALUES ('".$this -> sessionid."', '127.0.0.1', '".time()."', '".$this -> expiredtime."','".$this -> username."')";
+			mysql_query($sql_a) or die(mysql_error());
+			mysql_query($sql_b) or die(mysql_error());
+		}
 		if(mysql_errno()){
 			mysql_query('rollback');
-			echo 'err';
+			return "sqlerror";
 		}else{
 			mysql_query('commit');
-			echo "ok";
+			return  "success";
 		}
+	}
+	private function isUserExist($value=''){
+		$sql = "SELECT * FROM `herald_user` WHERE `card_num`='".$this -> username."' limit 1";
+		$query = mysql_query($sql);
+		if(mysql_fetch_array($query)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	private function isUserLogin(){
+		$sql = "SELECT * FROM `herald_session` WHERE `session_id`='".$_COOKIE['HERALD_USER_SESSION_ID']."'";
+		$query = mysql_query($sql);
+		if($rs = mysql_fetch_array($query)){
+			if(!empty($_COOKIE['HERALD_USER_SESSION_ID']) && $rs['ip'] == $_SERVER['REMOTE_ADDR'] && time() < $rs['expired_time'] && $rs['user_id'] == $this -> username){
+				return true;
+			}
+		}
+		return false;
 	}
 }
