@@ -22,7 +22,7 @@ class GetSessionModel{
 	public function getCurrentSession(){
 		if(!empty($_COOKIE['HERALD_USER_SESSION_ID'])){
 			$sql = "SELECT user_id FROM `herald_session` WHERE `session_id` = '".$_COOKIE['HERALD_USER_SESSION_ID']."' AND `ip`='".$_SERVER['REMOTE_ADDR']."' limit 1";
-			$query = mysql_query($sql);
+			$query = mysql_query($sql) or die(mysql_error());
 			if($rs = mysql_fetch_array($query,MYSQL_ASSOC)){
 				$sql_a = "SELECT * FROM `herald_user` WHERE `card_num`='".$rs['user_id']."'";
 				$query_a = mysql_query($sql_a);
@@ -35,9 +35,5 @@ class GetSessionModel{
 		}else{
 			return false;
 		}
-	}
-	public function getUserSessionState($userid){
-		$sql = "SELECT * FROM `herald_session` WHERE `user_id`='".$userid."'";
-		
 	}
 }
