@@ -1,5 +1,5 @@
 <?php
 require 'Lib/GetSessionActionClass.php';
 
-$GetSessionAction = new GetSessionAction($_POST['cookie']);
+$GetSessionAction = new GetSessionAction();
 $GetSessionAction -> getLoginUserInfo();

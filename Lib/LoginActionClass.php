@@ -1,11 +1,18 @@
 <?php
 /**
  *
- *This is herald user account class
- *This class confirm user and create session for each user
+ *This class achieve login action for herald user account
+ *Client app can post the username and password to this 
+ *class.
+ *If the right username and password combination has given.
+ *It will return a json format data with user information and 
+ *some success message. Otherwise, It will return a json format
+ *error information with error type and error message. The detaile
+ *message please read the documentation on github of Heraldstudio
  *
+ * 
  *@author Tairy <tairyguo@gmail.com>
-*@version 2.0
+ *@version 2.0
  *@copyright HeraldStudio SEU
  *
  **/
@@ -23,10 +30,17 @@ class LoginAction{
 	private $cookie;
 	private $loginuserinfo;
 	private $redirecturl;
+	private $errorinfo;
+	private $successinfo;
 
-	function __construct($username, $password){
-		$this -> username = $username;
-		$this -> password = $password;
+	function __construct(){
+		$this -> username = $_POST['username'];
+		$this -> password =  $_POST['password'];
+		if(!empty($_POST['redirecturl'])){
+			$this -> redirecturl = $_POST['redirecturl'];
+		}else{
+			$this -> redirecturl = $_SERVER["HTTP_REFERER"];
+		}
 		$this -> meminstance = new Memcache();
 		$this -> meminstance -> pconnect('localhost', 11211);
 		DbConnectModel::startConnect();
@@ -36,17 +50,19 @@ class LoginAction{
 		DbConnectModel::closeConnect();
 	}
 
-	/*Entrance function of the class*/
 	public function login(){
-		//confirm user
 		if($this -> confirmUserInfo() == "error"){
-			echo "用户名密码或错误";
+			$this -> errorinfo['code'] = 1;
+			$this -> errorinfo['type'] = "AccountError";
+			$this -> errorinfo['message'] = "用户名或密码错误!";
+			echo json_encode($this -> errorinfo);
 		}else{
 			$this -> recordUserInfo();
 			$this -> createSession();
-			$this -> redirecturl = $_SERVER["HTTP_REFERER"];
-			#Header("Location:".$this -> redirecturl);
-			echo $this -> loginuserinfo;
+			$this -> successinfo['code'] = 200;
+			$this -> successinfo['message'] = "登录成功!";
+			$this -> successinfo['data'] = $this -> loginuserinfo;
+			echo json_encode($this -> successinfo);
 		}
 	}
 
@@ -70,7 +86,6 @@ class LoginAction{
 		}
 	} 
 
-	//record user info
 	private function recordUserInfo(){
 		$sql = "INSERT INTO `herald_user` (`card_num`, `true_name`) VALUES ('".$this -> cardnum."', '".$this -> truename."')";
 		mysql_query($sql);
