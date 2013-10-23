@@ -10,7 +10,7 @@
 class DbConnectModel{
 	private static $conn;
 	public static function startConnect(){
-		self::$conn = mysql_connect("localhost", "root", "12345678");
+		self::$conn = mysql_connect("localhost", "root", "123456");
 		mysql_select_db("herald_user_account");
 		mysql_query("set names utf8");
 	}
