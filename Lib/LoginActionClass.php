@@ -80,6 +80,21 @@ class LoginAction{
 		}
 	}
 
+	public function logout(){
+		if(!empty($_POST['cookie'])){
+			$this -> meminstance -> delete($_POST['cookie']);
+		   setcookie('HERALD_USER_SESSION_ID', null);
+		   $this -> successinfo['code'] = 200;
+			$this -> successinfo['message'] = "登出成功!";
+			echo json_encode($this -> successinfo);
+		}else{
+			$this -> errorinfo['code'] = 3;
+			$this -> errorinfo['type'] = "CookieError";
+			$this -> errorinfo['message'] = "cookie不存在!";
+			echo json_encode($this -> errorinfo);
+		}
+	}
+
 	private function confirmUserInfo(){
 		$ch = curl_init();
 		$postdata ="username=".$this -> username."&password=".$this -> password;
