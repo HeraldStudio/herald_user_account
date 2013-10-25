@@ -12,7 +12,7 @@
  *
  * 
  *@author Tairy <tairyguo@gmail.com>
- *@version 2.0
+*@version 2.0
  *@copyright HeraldStudio SEU
  *
  **/
@@ -32,15 +32,25 @@ class LoginAction{
 	private $redirecturl;
 	private $errorinfo;
 	private $successinfo;
+	private $isgetinfo;
 
 	function __construct(){
 		$this -> username = $_POST['username'];
 		$this -> password =  $_POST['password'];
-		if(!empty($_POST['redirecturl'])){
-			$this -> redirecturl = $_POST['redirecturl'];
+		$requesturl = parse_url($_SERVER["HTTP_REFERER"]);
+		$requesturl = explode('=', $requesturl['query']);
+
+		if($requesturl[0] == "redirecturl"){
+
+			if(!empty($requesturl[1])){
+				$this -> redirecturl = $requesturl[1];
+			}else{
+				$this -> redirecturl = $_SERVER["HTTP_REFERER"];
+			}
 		}else{
 			$this -> redirecturl = $_SERVER["HTTP_REFERER"];
 		}
+		$this -> isgetinfo = true;
 		$this -> meminstance = new Memcache();
 		$this -> meminstance -> pconnect('localhost', 11211);
 		DbConnectModel::startConnect();
@@ -59,10 +69,14 @@ class LoginAction{
 		}else{
 			$this -> recordUserInfo();
 			$this -> createSession();
-			$this -> successinfo['code'] = 200;
-			$this -> successinfo['message'] = "登录成功!";
-			$this -> successinfo['data'] = $this -> loginuserinfo;
-			echo json_encode($this -> successinfo);
+			if($this -> isgetinfo){
+				$this -> successinfo['code'] = 200;
+				$this -> successinfo['message'] = "登录成功!";
+				$this -> successinfo['data'] = $this -> loginuserinfo;
+				$this -> successinfo['redirecturl'] = $this -> redirecturl;
+				//echo $this -> redirecturl;
+				echo json_encode($this -> successinfo);
+			}
 		}
 	}
 
@@ -83,6 +97,12 @@ class LoginAction{
 			$responseword = explode(',', $responseword);
 			$this -> truename = $responseword[0];
 			$this -> cardnum = $responseword[1];
+		}elseif($info['http_code'] == 0){
+			$this -> errorinfo['code'] = 1;
+			$this -> errorinfo['type'] = "ServerError";
+			$this -> errorinfo['message'] = "服务器故障!";
+			echo json_encode($this -> errorinfo);
+			$this -> isgetinfo = false;
 		}
 	} 
 

@@ -13,21 +13,19 @@ jQuery(document).ready(function($) {
 		$.ajax({
 			url: 'login.php',
 			type: 'post',
-			dataType: 'text',
+			dataType: 'json',
 			data: {username: username, password: password},
+			success: function(data){
+				if(data.code == 200){
+					window.location = data.redirecturl;
+				}else{
+					alert(data.message);
+				}
+			},
+			error: function(){
+				console.log("error");
+			}
 		})
-		.done(function(data) {
-			//alert(data);
-			console.log(data);
-			//window.location = data;
-		})
-		.fail(function() {
-			console.log("error");
-		})
-		.always(function() {
-			console.log("complete");
-		});
-		
 	});
 
 	$("#submit").click(function() {
