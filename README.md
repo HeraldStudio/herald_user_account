@@ -8,7 +8,7 @@
 1.web页面中使用方法
 
 >在web页面中加入以下代码<pre>`<a href="http://herald.seu.edu.cn/useraccount/login.html?redirecturl={登录成功后跳转的连接地址}">登录</a>`</pre>
-注：如果没有传递`redirecturl`参数，则默认跳转回发送请求的页面, 如果是直接访问的这个页面，则跳转至先声首页。
+注：如果没有传递`redirecturl`参数，则默认跳转回发送请求的页面。
 
 2.其他需要返回信息的应用中使用方法
 
@@ -29,3 +29,22 @@ iii.服务器故障返回JSON：
     <thead><tr><th>代码</th><th>说明</th></tr></thead>
     <tbody><tr><td>200</td><td>正确返回结果</td></tr><tr><td>1</td><td>用户名或密码错误</td><tr><td>500</td><td>服务器故障，(可能是网络连接错误，无法访问一卡通中心)</td></tr></tr></tbody>
 </table>
+
+###二、在web应用中获取当前登录用户
+>获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/getloginuserinfo.php`
+###三、在web应用中登出
+>获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/logout.php`
+###四、以上操作返回值说明
+1.获取当前登录用户时返回结果
+<pre>有用户登录返回
+{"code":200,"message":"已有用户登录!","data":"{\"truename\":XXX,\"cardnum\":213xxxxxx}"}没有用户登录登录返回
+{"code":404,"message":"没有用户登录!"}
+cookie值为空返回
+{"code":1,"type":"BadDataPost","message":"No cookie error!"}
+</pre>
+2.用户退出时返回
+<pre>退出成功返回
+{"code":200,"message":"登出成功!"}
+cookie值为空时返回
+{"code":3,"type":"CookieError","message":"cookie不存在!"}
+</pre>

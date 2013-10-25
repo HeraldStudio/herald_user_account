@@ -49,7 +49,7 @@ class GetSessionAction{
 	private function cheakPostData(){
 		if(empty($this -> cookie)){
 			$this -> errorinfo['code'] = 1;
-			$this -> errorinfo['type'] = "Bad data post";
+			$this -> errorinfo['type'] = "BadDataPost";
 			$this -> errorinfo['message'] = "No cookie error";
 			echo json_encode($this -> errorinfo);
 			return;
