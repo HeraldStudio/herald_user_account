@@ -2,6 +2,7 @@ jQuery(document).ready(function($) {
 	$('#login').click(function(event) {
 		var username = $('#username').val();
 		var password = $('#password').val();
+		var redirecturl = document.referrer;
 		if (username == ''){
 			alert("用户名不能为空");
 			return;
@@ -14,7 +15,7 @@ jQuery(document).ready(function($) {
 			url: 'login.php',
 			type: 'post',
 			dataType: 'json',
-			data: {username: username, password: password},
+			data: {username: username, password: password,redirecturl: redirecturl},
 			success: function(data){
 				if(data.code == 200){
 					window.location = data.redirecturl;

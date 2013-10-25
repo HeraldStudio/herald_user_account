@@ -39,16 +39,17 @@ class LoginAction{
 		$this -> password =  $_POST['password'];
 		$requesturl = parse_url($_SERVER["HTTP_REFERER"]);
 		$requesturl = explode('=', $requesturl['query']);
-
 		if($requesturl[0] == "redirecturl"){
-
 			if(!empty($requesturl[1])){
 				$this -> redirecturl = $requesturl[1];
 			}else{
-				$this -> redirecturl = $_SERVER["HTTP_REFERER"];
+				$this -> redirecturl = $_POST['redirecturl'];
 			}
 		}else{
-			$this -> redirecturl = $_SERVER["HTTP_REFERER"];
+			$this -> redirecturl = $_POST['redirecturl'];
+		}
+		if(empty($this -> redirecturl)){
+			$this -> redirecturl = "http://herald.seu.edu.cn";
 		}
 		$this -> isgetinfo = true;
 		$this -> meminstance = new Memcache();
@@ -74,7 +75,6 @@ class LoginAction{
 				$this -> successinfo['message'] = "登录成功!";
 				$this -> successinfo['data'] = $this -> loginuserinfo;
 				$this -> successinfo['redirecturl'] = $this -> redirecturl;
-				//echo $this -> redirecturl;
 				echo json_encode($this -> successinfo);
 			}
 		}

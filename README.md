@@ -8,7 +8,7 @@
 1.web页面中使用方法
 
 >在web页面中加入以下代码<pre>`<a href="http://herald.seu.edu.cn/useraccount/login.html?redirecturl={登录成功后跳转的连接地址}">登录</a>`</pre>
-注：如果没有传递`redirecturl`参数，则默认跳转回发送请求的页面。
+注：如果没有传递`redirecturl`参数，则默认跳转回发送请求的页面, 如果是直接访问的这个页面，则跳转至先声首页。
 
 2.其他需要返回信息的应用中使用方法
 
