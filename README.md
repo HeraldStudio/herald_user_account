@@ -89,8 +89,8 @@ cookie值为空时返回
 
     module SessionsHelper
     	def require_data
-        # current_cookie = cookies[:HERALD_USER_SESSION_ID]
-        params = {'cookie' => '14901fe4b094f8e09f8f842c242aa8b3'}
+        current_cookie = cookies[:HERALD_USER_SESSION_ID]
+        params = {'cookie' => current_cookie}
     		reponse_data = Net::HTTP.post_form(URI.parse('http://herald.seu.edu.cn/useraccount/getloginuserinfo.php'),params)
       end
     
@@ -109,7 +109,8 @@ cookie值为空时返回
       end
     
       def user_logout
-      	params = {'cookie' => '14901fe4b094f8e09f8f842c242aa8b3'}
+        current_cookie = cookies[:HERALD_USER_SESSION_ID]
+      	params = {'cookie' => current_cookie}
     		reponse_data = Net::HTTP.post_form(URI.parse('http://herald.seu.edu.cn/useraccount/logout.php'),params)
       	response_data_json = JSON::parse(reponse_data.body)
       end
