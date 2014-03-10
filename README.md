@@ -31,18 +31,26 @@ iii.服务器故障返回JSON：
 </table>
 
 ###二、在web应用中获取当前登录用户
+
 >获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/getloginuserinfo.php`
+
 ###三、在web应用中登出
+
 >获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/logout.php`
+
 ###四、以上操作返回值说明
+
 1.获取当前登录用户时返回结果
+
 <pre>有用户登录返回
 {"code":200,"message":"已有用户登录!","data":"{\"truename\":XXX,\"cardnum\":213xxxxxx}"}没有用户登录登录返回
 {"code":404,"message":"没有用户登录!"}
 cookie值为空返回
 {"code":1,"type":"BadDataPost","message":"No cookie error!"}
 </pre>
+
 2.用户退出时返回
+
 <pre>退出成功返回
 {"code":200,"message":"登出成功!"}
 cookie值为空时返回
