@@ -32,11 +32,11 @@ iii.服务器故障返回JSON：
 
 ###二、在web应用中获取当前登录用户
 
->获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/getloginuserinfo.php`
+>获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/getloginuserinfo.php`,参数名称是cookie
 
 ###三、在web应用中登出
 
->获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/logout.php`
+>获取键值为`HERALD_USER_SESSION_ID`的cookie，然后POST到`http://herald.seu.edu.cn/useraccount/logout.php`，参数名称是cookie
 
 ###四、以上操作返回值说明
 
