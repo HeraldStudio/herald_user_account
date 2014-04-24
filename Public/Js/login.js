@@ -17,6 +17,7 @@ jQuery(document).ready(function($) {
 			dataType: 'json',
 			data: {username: username, password: password,redirecturl: redirecturl},
 			success: function(data){
+				console.log("sss");
 				if(data.code == 200){
 					window.location = data.redirecturl;
 				}else{

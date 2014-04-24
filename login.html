@@ -10,14 +10,23 @@
     <script type="text/javascript" src="./Public/Js/jquery.js"></script>
     <script type="text/javascript" src="./Public/Js/login.js"></script>
   </head>
-
-  <body style="background-image:url(./Public/Images/noise-all.png)">
-    <div class="container center well" style="margin-top:150px;">
+  <body>
+    <div id="denglu">
+      <h1>东南大学先声网</h1>
+    </div>
+    <div id="cover"></div>
+    <div id="form">
       <label class="control-label" for="inputUsername">用户名（一卡通）</label>
-      <input type="text" id="username" name="username">
+      <input type="text" id="username" name="username" placeholder="用户名（一卡通）">
+
       <label class="control-label" for="inputPassword">密码</label>
-      <input type="password" id="password" name="password">
-      <button type="submit" class="btn btn-success center" id="login">登录</button>
+      <input type="password" id="password" name="password" placeholder="密码">
+
+      <button type="submit" class="btn btn-block" id="login" style="font-family:微软雅黑;margin-top:20px">登录</button>
+    </div>
+    <div style="height: 100px;position:fixed;bottom:0;width:100%;text-align:none;">
+      <hr style="border-top: 1px solid #999;margin:0px 40px 0px 40px;">
+      <h5 class="center" style="text-align:center;padding-top:36px;margin:0;color:#666;"> CopyRight &copy; 2001-2013 Herald.seu.edu.cn</h5>
     </div>
   </body>
 </html>

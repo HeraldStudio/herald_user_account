@@ -12,7 +12,7 @@
  *
  * 
  *@author Tairy <tairyguo@gmail.com>
-*@version 2.0
+ *@version 2.0
  *@copyright HeraldStudio SEU
  *
  **/
@@ -35,21 +35,25 @@ class LoginAction{
 	private $isgetinfo;
 
 	function __construct(){
-		$this -> username = $_POST['username'];
-		$this -> password =  $_POST['password'];
-		$requesturl = parse_url($_SERVER["HTTP_REFERER"]);
-		$requesturl = explode('=', $requesturl['query']);
-		if($requesturl[0] == "redirecturl"){
-			if(!empty($requesturl[1])){
-				$this -> redirecturl = $requesturl[1];
+		if(!empty($_POST['username']) && !empty($_POST['password'])){
+			$this -> username = $_POST['username'];
+			$this -> password =  $_POST['password'];
+		}
+		if(!empty($_SERVER["HTTP_REFERER"])){
+			$requesturl = parse_url($_SERVER["HTTP_REFERER"]);
+			$requesturl = explode('=', $requesturl['query']);
+			if($requesturl[0] == "redirecturl"){
+				if(!empty($requesturl[1])){
+					$this -> redirecturl = $requesturl[1];
+				}else{
+					$this -> redirecturl = $_POST['redirecturl'];
+				}
 			}else{
 				$this -> redirecturl = $_POST['redirecturl'];
 			}
-		}else{
-			$this -> redirecturl = $_POST['redirecturl'];
-		}
-		if(empty($this -> redirecturl)){
-			$this -> redirecturl = "http://herald.seu.edu.cn";
+			if(empty($this -> redirecturl)){
+				$this -> redirecturl = "http://herald.seu.edu.cn";
+			}
 		}
 		$this -> isgetinfo = true;
 		$this -> meminstance = new Memcache();
